@@ -26,6 +26,6 @@
         @method('DELETE')
         
         <button type="submit" class="btn btn-error btn-outline" 
-            onclick="return confirm('id = {{ $message->id }} のタスクを削除します。よろしいですか？')">削除</button>
+            onclick="return confirm('id = {{ $task->id }} のタスクを削除します。よろしいですか？')">削除</button>
     </form>
 @endsection

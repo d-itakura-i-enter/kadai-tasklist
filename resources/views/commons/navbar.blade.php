@@ -8,7 +8,7 @@
         <div class="flex-none">
             <ul tabindex="0" class="menu hidden lg:block lg:menu-horizontal">
                 {{-- タスク作成ページへのリンク --}}
-                <li><a class="link link-hover" href="{{ route('messages.create') }}">新規タスクの投稿</a></li>
+                <li><a class="link link-hover" href="{{ route('tasks.create') }}">新規タスクの投稿</a></li>
             </ul>
             <div class="dropdown dropdown-end">
                 <button type="button" tabindex="0" class="btn btn-square btn-ghost lg:hidden">
