@@ -13,7 +13,6 @@
                     <th>id</th>
                     <th>状態</th>
                     <th>タスク</th>
-                    <th>削除</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,15 +21,6 @@
                     <td><a class="link link-hover text-info" href="{{ route('tasks.show', $task->id) }}">{{ $task->id }}</a></td>
                     <td>{{ $task->status }}</td>
                     <td>{{ $task->content }}</td>
-                    <td> @if (Auth::id() == $task->user_id)
-                                {{-- 投稿削除ボタンのフォーム --}}
-                                <form method="POST" action="{{ route('tasks.destroy', $task->id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-error btn-sm normal-case" 
-                                        onclick="return confirm('Delete id = {{ $task->id }} ?')">Delete</button>
-                                </form>
-                            @endif</td>
                 </tr>
                 @endforeach
             </tbody>
