@@ -62,8 +62,6 @@ class TasksController extends Controller
             $request->user()->tasks()->create([
                 'content' => $request->content,
                 'status' => $request->status,
-                // ['content' => $request->content],
-                // ['status' => $request->status],
             ]);
             
             // 前のURLへリダイレクトさせる
@@ -92,13 +90,13 @@ class TasksController extends Controller
     // getでtasks/id/editにアクセスされた場合の「更新画面表示処理」
     public function edit($id)
     {
-        if (\Auth::check()){ 
-            // idの値でメッセージを検索して取得
-            $task = Task::findOrFail($id);
-    
+        // idの値でメッセージを検索して取得
+        $task = Task::findOrFail($id);
+            
+        if (\Auth::id() === $task->user_id) {
             // メッセージ編集ビューでそれを表示
             return view('tasks.edit', [
-                'task' => $task,
+            'task' => $task,
             ]);
         }else{
             return view('dashboard');
@@ -116,10 +114,14 @@ class TasksController extends Controller
             ]);
             // idの値でメッセージを検索して取得
             $task = Task::findOrFail($id);
-            // メッセージを更新
-            $task->status = $request->status;
-            $task->content = $request->content;
-            $task->save();
+            if (\Auth::id() === $task->user_id) {
+                // メッセージを更新
+                $task->status = $request->status;
+                $task->content = $request->content;
+                $task->save();
+            }else{
+            return view('dashboard');
+        }
     
             // トップページへリダイレクトさせる
             return redirect('/');
