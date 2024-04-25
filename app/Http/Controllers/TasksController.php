@@ -29,56 +29,46 @@ class TasksController extends Controller
         }else{
              return view('dashboard');
         }
-        
-        
     }
 
     // getでtasks/createにアクセスされた場合の「新規登録画面表示処理
     public function create()
     {
-        if (\Auth::check()) { // 認証済みの場合
         $task = new Task;
         
         // タスク作成ビューを表示
         return view('tasks.create', [
             'task' => $task,
         ]);
-        }else{
-            return view('dashboard');
-        }
+        
     }
 
     // postでtasks/にアクセスされた場合の「新規登録処理」
     public function store(Request $request)
     {
-        if (\Auth::check()) 
-        {
-            // バリデーション
-            $request->validate([
-                'status' => 'required|max:10',
-                'content' => 'required|max:255',
-            ]);
-            // 認証済みユーザー（閲覧者）の投稿として作成（リクエストされた値をもとに作成）
-            $request->user()->tasks()->create([
-                'content' => $request->content,
-                'status' => $request->status,
-            ]);
+        // バリデーション
+        $request->validate([
+            'status' => 'required|max:10',
+            'content' => 'required|max:255',
+        ]);
+        // 認証済みユーザー（閲覧者）の投稿として作成（リクエストされた値をもとに作成）
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status,
+        ]);
             
-            // 前のURLへリダイレクトさせる
-            return redirect('/');
-        }else{
-            return view('dashboard');
-        }
+        // 前のURLへリダイレクトさせる
+        return redirect('/');
     }
 
     // getでtasks/idにアクセスされた場合の「取得表示処理」
     public function show($id)
     {
-        if (\Auth::check()){ 
-            // idの値でメッセージを検索して取得
-            $task = Task::findOrFail($id);
     
-            // メッセージ詳細ビューでそれを表示
+        // idの値でメッセージを検索して取得
+        $task = Task::findOrFail($id);
+        if (\Auth::id() === $task->user_id) {
+        // メッセージ詳細ビューでそれを表示
             return view('tasks.show', [
                 'task' => $task,
             ]);
@@ -106,28 +96,24 @@ class TasksController extends Controller
     // putまたはpatchでtasks/idにアクセスされた場合の「更新処理」
     public function update(Request $request, $id)
     {
-        if (\Auth::check()){ 
-            // バリデーション
-            $request->validate([
-                'status' => 'required|max:10',
-                'content' => 'required|max:255',
-            ]);
-            // idの値でメッセージを検索して取得
-            $task = Task::findOrFail($id);
-            if (\Auth::id() === $task->user_id) {
-                // メッセージを更新
-                $task->status = $request->status;
-                $task->content = $request->content;
-                $task->save();
-            }else{
-            return view('dashboard');
-        }
-    
-            // トップページへリダイレクトさせる
-            return redirect('/');
+        // バリデーション
+        $request->validate([
+            'status' => 'required|max:10',
+            'content' => 'required|max:255',
+        ]);
+        // idの値でメッセージを検索して取得
+        $task = Task::findOrFail($id);
+        if (\Auth::id() === $task->user_id) {
+            // メッセージを更新
+            $task->status = $request->status;
+            $task->content = $request->content;
+            $task->save();
         }else{
             return view('dashboard');
         }
+    
+        // トップページへリダイレクトさせる
+        return redirect('/');
     }
 
     // deleteでtasks/idにアクセスされた場合の「削除処理」
